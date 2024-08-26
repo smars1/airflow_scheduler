@@ -13,7 +13,10 @@ RUN apt-get update && apt-get install -y \
 
 USER airflow
 
-
+# Clonar el repositorio de DAGs en un directorio temporal
+RUN git clone https://github.com/smars1/Airflow_dags_testing.git /tmp/repo && \
+    mv /tmp/repo/dags/* /opt/airflow/dags/ && \
+    rm -rf /tmp/repo
 
 # Instalar las dependencias de Python si es necesario
 COPY requirements.txt /requirements.txt
