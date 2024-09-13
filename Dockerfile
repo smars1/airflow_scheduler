@@ -14,7 +14,8 @@ RUN apt-get update && apt-get install -y \
 USER airflow
 
 # Crear las carpetas 'plugins' y 'logs'
-RUN mkdir -p /opt/airflow/plugins /opt/airflow/logs
+RUN mkdir -p /opt/airflow/plugins /opt/airflow/logs && \
+    chown -R airflow /opt/airflow/logs
 
 # Clonar el repositorio de DAGs en un directorio temporal
 RUN git clone https://github.com/smars1/Airflow_dags_testing.git /tmp/repo && \
@@ -27,7 +28,10 @@ COPY requirements.txt /requirements.txt
 COPY variables_test.json /opt/airflow/variables_test.json
 
 RUN pip install --upgrade pip
-RUN pip install -r /requirements.txt
+RUN pip install --no-cache-dir -r /requirements.txt
+# copiar el resto del código fuente: se aprovecha el cache de docker para no volver instalar los paquetes con pip
+# Solo usar si no se modifica el requirements
+COPY . .
 
 
 
